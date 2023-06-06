@@ -1,0 +1,131 @@
+Now open the terminal Alt+Ctrl+T and run these commands 
+
+sudo apt-get update
+sudo apt install default-jdk
+sudo addgroup hadoop
+sudo adduser --ingroup hadoop hdp123
+sudo adduser hadoop1 sudo
+sudo apt install openssh-server
+It will ask for the password and press “Y” if asked
+while installation it will asked for “Enter the new value, or press ENTER for the default.
+Just press enter. Give blank for the Name ,Number and phone and press “y”.
+After completion of the commands
+##switch to the hadoop1 user by typing 
+su hdp123  and enter your password.
+Now run below commands
+ssh-keygen -t rsa -P “ ”
+cat $HOME/.ssh/id_rsa.pub >> $HOME/.ssh/authorized_keys
+chmod 640 ~/.ssh/authorized_keys
+ssh localhost
+Enter blank while ssh key passphrase
+After completing the process type “exit”
+--------------------------------------------------------------------------------------------------
+##to install hadoop,first download the hadoop from the given link
+http://www-eu.apache.org/dist/hadoop/common
+##check for your current directory,bcoz u have to access hadoop folder  from desktop
+after cd cmd
+chk for ls(whether it  is showing hadoop folder or not)
+
+now,
+sudo tar -xzvf hadoop-2.10.1.tar.gz 
+check whether folder is extracted or not
+ls
+sudo mv hadoop-2.10.1  /usr/local/hadoop
+sudo chown -R hdp123  /usr/local
+
+
+
+Only one thing we need to do the process given below
+Type “sudo nano ~/.bashrc" and at the end of the file paste the below content and save the file by Ctrl+o and Hit Enter and again Hit Enter
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+export HADOOP_HOME=/usr/local/hadoop
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_HOME
+export HADOOP_COMMON_HOME=$HADOOP_HOME
+export HADOOP_HDFS_HOME=$HADOOP_HOME
+export YARN_HOME=$HADOOP_HOME
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/native"
+
+
+now type
+gedit ~/usr/local/hadoop/etc/hadoop/hadoop-env.sh
+# add following line in it
+# for 32 bit ubuntu
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-i386
+# for 64 bit ubuntu
+export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+# save and exit the file
+
+now type
+gedit ~/usr/local/hadoop/etc/hadoop/core-site.xml
+<property>
+  <name>fs.default.name</name>
+  <value>hdfs://localhost:9000</value>
+</property>
+
+now type
+gedit ~/usr/local/hadoop/etc/hadoop/hdfs-site.xml
+<property>
+  <name>dfs.replication</name>
+  <value>1</value>
+</property>
+<property>
+  <name>dfs.namenode.name.dir</name>
+  <value>file:/usr/local/hadoop_tmp/hdfs/namenode</value>
+</property>
+<property>
+ <name>dfs.datanode.data.dir</name>
+ <value>file:/usr/local/hadoop_tmp/hdfs/datanode</value>
+</property>
+
+now type
+gedit ~/usr/local/hadoop/etc/hadoop/yarn-site.xml
+<property>
+  <name>yarn.nodemanager.aux-services</name>
+  <value>mapreduce_shuffle</value>
+</property>
+<property>
+  <name>yarn.nodemanager.aux-services.mapreduce.shuffle.class</name>
+  <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+</property>
+
+
+now type
+gedit ~/usr/local/hadoop/etc/hadoop/mapred-site.xml
+<property>
+  <name>mapreduce.framework.name</name>
+  <value>yarn</value>
+</property>
+
+##now we will create name node and data node
+sudo mkdir -p /usr/local/hadoop_tmp
+sudo mkdir -p /usr/local/hadoop_tmp/hdfs/namenode
+sudo mkdir -p /usr/local/hadoop_tmp/hdfs/datanode
+sudo chown -R hdp123  /usr/local/hadoop_space
+hdfs namenode -format
+
+start -dfs.sh
+start -yarn.sh
+
+$jps
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
