@@ -1,0 +1,18 @@
+package SalesCountry;
+
+import java.io.IOExcepption;
+
+import org.apache.hadoop.fs.path;
+import org.apache.hadoop.io.*;
+import org.apche.hadoop.mapred.*;
+
+
+public class SalesMapper extends MapReduceBase implements Mapper<LongWritable,Text,Text,IntWritable>{
+	private final static Inwritable one = new IntWritable(1);
+		
+	public void map(LongWritable key,Text value , OutputCollector<Text,Inwritable> output,Reporter reporter) throws IOException{
+		String valueString = alue.toString();
+		String[] SingleCountryData= valueString.split("-");
+		output.collect(new Text(SingleCountryData[0]),one;
+	}
+}
